@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+
+<title>Automated Functional and Acceptance Testing</title>
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<link rel="stylesheet" href="reveal.js-2.6.1/css/reveal.min.css">
+<link rel="stylesheet" href="reveal.js-2.6.1/css/theme/beige.css" id="theme">
+
+<!-- For syntax highlighting -->
+<link rel="stylesheet" href="reveal.js-2.6.1/lib/css/zenburn.css">
+
+<!--[if lt IE 9]>
+<script src="lib/js/html5shiv.js"></script>
+<![endif]-->
+</head>
+<body>
+
+<div class="reveal">
+    
+    <div class="slides">
+        <section>
+            <h2>Automated Functional<br>and Acceptance Testing</h2>
+            <p><small>Created by <a href="mailto:djohnson@sapient.com">Daniel Johnson</a><br />Sapient Global Markets<br />@SapientGM</small></p>
+        </section>
+        
+        <section>
+            <h2>The Plan</h2>
+            <ul>
+                <li>What is functional/acceptance testing compared to unit and integration testing</li>
+                <li>Why would you want to do this, and then why would you want to automate it</li>
+                <li>What is Selenium and how does it compare to other alternatives</li>
+                <li>How to install and configure Selenium for PHP</li>
+                <li>Using Selenium with PHPUnit</li>
+                <li>Demo application</li>
+                <li>Integration with Jenkins</li>
+            </ul>
+        </section>
+        
+        <section>
+            <section>
+                <h2>Unit Tests</h2>
+                <ul>
+                    <li>Test a single small unit of code</li>
+                    <li>Can run in isolation</li>
+                    <li>Does not use any real components, but instead mocks or stubs if needed</li>
+                    <li>Is usually what's referred to when talking about code coverage metrics</li>
+                </ul>
+                <br>
+                <br>
+                <p><small><a href="http://martinfowler.com/articles/mocksArentStubs.html">http://martinfowler.com/articles/mocksArentStubs.html</a></small></p>
+            </section>
+            
+            <section>
+                <h2>Integration Tests</h2>
+                <ul>
+                    <li>Test that multiple units of an application work together</li>
+                    <li>Can be anything from a couple functions, to something that requires a resource like a database, to a full system wide test</li>
+                    <li>Often used to test the interaction between applications layers (e.g. core, services, user interface)
+                </ul>
+            </section>
+            
+            <section>
+                <h2>Functional Tests</h2>
+                <ul>
+                    <li>Used by the development and/or QA team to check that features of the application match up to the spec</li>
+                    <li>Often match up to agile or BDD stories</li>
+                    <li>Tests the functionality using a headless browser</li>
+                </ul>
+            </section>
+            
+            <section>
+                <h2>Acceptance Tests</h2>
+                <ul>
+                    <li>Used by the QA team and/or the client to validate that features are working correctly</li>
+                    <li>Often match up to agile or BDD stories</li>
+                    <li>Done in a production like environment with a real browser(s)</li>
+                    <li>Is usually one of the last steps of doneness in a story</li>
+                </ul>
+            </section>
+        </section>
+        
+        <section>
+            <h2>Imagine that...</h2>
+            
+            <ul>
+                <li>You have 12 person distributed development team</li>
+                <li>You have a 5 person distributed QA team</li>
+                <li>Building a large scale application on a tight deadline</li>
+                <li>The full testing plan didn't quite make it into the budget</li>
+                <li>Incomplete unit test coverage</li>
+                <li>One full regression cycle by QA team takes 3 days</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2>:(</h2>
+        </section>
+        
+        <section>
+            <h2>Or, imagine that...</h2>
+            
+            <ul>
+                <li>You have 2 person development team</li>
+                <li>You have no QA team</li>
+                <li>Building a small/medium scale application on a tight deadline</li>
+                <li>You figure you'll write tests as needed</li>
+                <li>Client requests a new feature that requires you to do a significant refactor</li>
+                <li>You get the new feature to work, but break half of the other features in the process</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2>:(</h2>
+        </section>
+        
+        <section>
+            <section>
+                <h2>What is Selenium?</h2>
+            
+                <blockquote cite="http://www.seleniumhq.org">"Selenium automates browsers. That's it. What you do with that power is entirely up to you."</blockquote>
+                
+                <br />
+                
+                <p>Started in 2004 at <a href="http://www.thoughtworks.com">http://www.thoughtworks.com</a></p>
+                
+                <br />
+                
+                <ul>
+                    <li>Selenium IDE</li>
+                    <li>Selenium Remote Control</li>
+                    <li>Selenium WebDriver</li>
+                    <li>Selenium Grid</li>
+                </ul>
+            </section>
+            
+            <section>
+                <h2>Alternatives</h2>
+            
+                <ul>
+                    <li>Real Browsers
+                        <ul>
+                            <li><a href="http://sahi.co.in">Sahi</a></li>
+                            <li><a href="http://www.borland.com/products/silktest">Silk</a></li>
+                            
+                        </ul>
+                    </li>
+                    <li>Headless Browsers
+                        <ul>
+                            <li><a href="http://phantomjs.org">PhantomJS (Webkit)</a>
+                                <ul>
+                                    <li><a href="http://casperjs.org">CasperJS</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="http://zombie.labnotes.org">Zombie.js</a> (not really headless, uses V8, JSDOM, sizzle, etc)</li>
+                            <li><a href="http://slimerjs.org">SlimerJS (Gecko)</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+        </section>
+        
+        <section>
+            <section>
+                <h2>Install Selenium</h2>
+            
+                <ol>
+                    <li>Download latest chrome driver from <a href="http://chromedriver.storage.googleapis.com/index.html">http://chromedriver.storage.googleapis.com/index.html?path=2.7/</a></li>
+                    <li>Move to /usr/local/ and then make sure this directory is in your system path</li>
+                    <li>Download Selenium server from <a href="http://code.google.com/p/selenium/downloads/list">http://code.google.com/p/selenium/downloads/list</a></li>
+                    <li>Move to /usr/local/</li>
+                    <li>Add the jar to your system path as SELENIUM_SERVER_JAR</li>
+                    <li>java -jar /usr/local/selenium-server-standalone-2.39.0.jar</li>
+                </ol>  
+            </section>
+            
+            <section>
+                <h2>Install PHPUnit</h2>
+                
+                <p>Composer</p>
+                
+                <pre><code data-trim>
+{
+    "require-dev": {
+        "phpunit/phpunit": "3.7.x",
+        "phpunit/phpunit-selenium": ">=1.2"
+    }
+}
+                </code></pre> 
+                
+                <pre><code data-trim>
+ln -s vendor/bin/phpunit phpunit 
+                </code></pre> 
+                
+                <p>Pear</p>
+                
+                <pre><code data-trim>
+pear config-set auto_discover 1
+pear install pear.phpunit.de/PHPUnit
+pear install phpunit/PHPUnit_Selenium
+                </code></pre> 
+            </section>
+        </section>
+        
+        <section>
+            <h2>Hello World</h2>
+            
+            <pre><code data-trim>
+class HelloWorldTest extends PHPUnit_Extensions_Selenium2TestCase {
+
+    protected function setUp() {
+        $this->setBrowser('chrome');
+        $this->setBrowserUrl('http://127.0.0.1/~djohn3/boston-php/hello-world/index.html');
+    }
+
+    public function testTitleAndParagraph() {
+        $this->url('http://127.0.0.1/~djohn3/boston-php/hello-world/index.html');
+
+        $this->assertEquals('Automated Functional and Acceptance Testing', $this->title());
+
+        $this->assertEquals('What the fox say?', $this->byId('firstParagraph')->text());
+    }
+
+}
+            </code></pre>
+        </section>
+        
+        <section>
+            <h2>Documentation, what documentation?</h2>
+            
+            <p><a href="https://github.com/sebastianbergmann/phpunit-selenium/blob/master/Tests/Selenium2TestCaseTest.php">https://github.com/sebastianbergmann/phpunit-selenium/blob/master/Tests/Selenium2TestCaseTest.php</a></p>
+        </section>
+        
+        <section>
+            <section>
+                <h3>General Page Info</h3>
+            
+                <pre><code data-trim>
+$this->url();
+$this->title();
+$this->source();
+$this->cookie();
+$this->localStorage();
+                </code></pre>
+                
+                <br />
+                
+                <h3>Selecting a single element</h3>
+            
+                <pre><code data-trim>
+$this->byId('container');
+$this->byClassName('container');
+$this->byCssSelector('div.container');
+$this->byName('div');
+$this->byTag('div');
+$this->byXPath('//div');
+                </code></pre>
+            </section>
+            
+            <section>
+                <h3>Select multiple elements</h3>
+            
+                <pre><code data-trim>
+$elements = $this->elements($this->using('id')->value('div'));
+$elements = $this->elements($this->using('class name')->value('div'));
+$elements = $this->elements($this->using('css selector')->value('div'));
+$elements = $this->elements($this->using('name')->value('div'));
+$elements = $this->elements($this->using('tag')->value('div'));
+$elements = $this->elements($this->using('xpath')->value('div'));
+                </code></pre>
+                
+                <br />
+                
+                <h3>Element properties</h3>
+            
+                <pre><code data-trim>
+$element->text();
+$element->name();
+$element->value();
+$element->clear();
+$element->attribute('class');
+$element->css('background-color'); // rgb
+$element->size(); // $size['width'], $size['height']
+$element->location(); // $location['x'], $location['y']
+$element->enabled(); // true|false
+$element->selected(); // true|false
+                </code></pre>
+            </section>
+            
+            <section>
+                <h3>Events</h3>
+    
+                <pre><code data-trim>
+$element->click();
+$element->doubleClick();
+$element->submit();
+
+$this->keys(PHPUnit_Extensions_Selenium2TestCase_Keys::ENTER);
+                </code></pre>
+                
+                <br />
+                
+                <h3>Asynchronous Operations</h3>
+            
+                <pre><code data-trim>
+$this->waitUntil(function() {
+    $elements = $this->elements($this->using('css selector')->value('tbody tr'));
+
+    return (count($elements) > 0) ? true : null;
+}, 3000);
+                </code></pre>
+            </section>
+            
+            <section>
+                <h3>Executing Scripts</h3>
+                
+                <pre><code data-trim>
+$this->timeouts()->asyncScript(10000);
+
+$script = 'var callback = arguments[0]; window.setTimeout(function() {
+    callback(document.title);
+}, 1000);';
+
+$result = $this->executeAsync(array(
+    'script' => $script,
+    'args'   => array()
+));
+
+$this->assertEquals('My Page', $result);
+                </code></pre>
+            </section>
+        </section>
+        
+        <section>
+            <h2>Demo</h2>
+        </section>
+        
+        <section>
+            <h2>Continuous Integration</h2>
+            
+            <p>"Integration is a long and unpredictable process"</p>
+            
+            <br />
+            
+            <ul>
+                <li>Software development practice where members of a team integrate their work frequently</li>
+                <li>Automatic build and testing process happens on each integration (usually triggered by commits in version control)</li>
+                <li><a href="http://jenkins-ci.org/">Jenkins</a></li>
+                <li><a href="http://travis-ci.com/">Travis</a></li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2>Jenkins and Phamtomjs on Ubuntu</h2>
+            
+            <ul>
+                <li>Download Phantomjs <a href="http://phantomjs.org/download.html">http://phantomjs.org/download.html</a> and place in /usr/bin</li>
+            </ul>
+            
+            <pre><code data-trim>
+// install and start jenkins
+apt-get install jenkins
+service start jenkins
+
+// register phantomjs with selenium
+phantomjs --webdriver=8080 --webdriver-selenium-grid-hub=http://166.78.112.120:4444
+            </code></pre>
+            
+            <pre><code data-trim>
+// execute the PHPunit tests based on the XML config
+/var/www/demo/vendor/bin/phpunit --log-junit /var/www/demo/results/phpunit/phpunit.xml -c /var/www/demo/test/phpunit.xml
+            </code></pre>
+        </section>
+        
+        <section>
+            <h2>Quick look at the same tests in JavaScript</h2>
+        </section>
+        
+        <section>
+            <h2>Questions?</h2>
+        </section>
+    </div>
+</div>
+
+<script src="reveal.js-2.6.1/lib/js/head.min.js"></script>
+<script src="reveal.js-2.6.1/js/reveal.min.js"></script>
+
+<script>
+
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+    controls: true,
+    progress: true,
+    history: true,
+    center: true,
+
+    transition: 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+    // Optional libraries used to extend on reveal.js
+    dependencies: [
+        { src: 'reveal.js-2.6.1/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'reveal.js-2.6.1/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: 'reveal.js-2.6.1/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } }
+    ]
+});
+
+</script>
+
+</body>
+</html>
